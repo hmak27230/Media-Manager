@@ -1,0 +1,185 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 4%);
+  --foreground: hsl(120, 100%, 45%);
+  --muted: hsl(0, 0%, 10%);
+  --muted-foreground: hsl(0, 0%, 60%);
+  --popover: hsl(0, 0%, 10%);
+  --popover-foreground: hsl(120, 100%, 45%);
+  --card: hsl(0, 0%, 10%);
+  --card-foreground: hsl(120, 100%, 45%);
+  --border: hsl(0, 0%, 20%);
+  --input: hsl(0, 0%, 20%);
+  --primary: hsl(120, 100%, 45%);
+  --primary-foreground: hsl(0, 0%, 4%);
+  --secondary: hsl(0, 0%, 10%);
+  --secondary-foreground: hsl(120, 100%, 45%);
+  --accent: hsl(25, 95%, 53%);
+  --accent-foreground: hsl(0, 0%, 4%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(120, 100%, 45%);
+  --radius: 0.5rem;
+
+  /* Custom LCD colors */
+  --lcd-green: hsl(120, 100%, 45%);
+  --lcd-amber: hsl(25, 95%, 53%);
+  --lcd-bg: hsl(0, 0%, 4%);
+  --lcd-panel: hsl(0, 0%, 10%);
+  --lcd-border: hsl(0, 0%, 20%);
+  --led-red: hsl(0, 100%, 60%);
+  --led-green: hsl(120, 100%, 60%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-mono antialiased bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .lcd-screen {
+    background: linear-gradient(135deg, var(--lcd-bg) 0%, var(--lcd-panel) 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .lcd-screen::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 255, 65, 0.03) 2px,
+      rgba(0, 255, 65, 0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .scan-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--lcd-green), transparent);
+    animation: scan 3s linear infinite;
+    z-index: 2;
+  }
+
+  .led-indicator {
+    @apply w-3 h-3 rounded-full relative;
+  }
+
+  .led-indicator.active {
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  .joystick-btn {
+    @apply transition-all duration-100 relative border-2 border-primary bg-card text-primary hover:bg-primary hover:text-primary-foreground;
+  }
+
+  .joystick-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+  }
+
+  .joystick-btn:active {
+    transform: scale(0.95);
+  }
+
+  .game-canvas {
+    @apply border-2 border-primary bg-background;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+  }
+
+  .volume-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    @apply h-2 bg-border outline-none rounded-sm;
+  }
+
+  .volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    @apply w-5 h-5 bg-primary cursor-pointer rounded-full;
+    box-shadow: 0 0 10px var(--lcd-green);
+  }
+
+  .volume-slider::-moz-range-thumb {
+    @apply w-5 h-5 bg-primary cursor-pointer rounded-full border-0;
+    box-shadow: 0 0 10px var(--lcd-green);
+  }
+
+  .menu-item {
+    @apply bg-card border-2 border-primary cursor-pointer transition-all hover:bg-primary hover:text-primary-foreground;
+  }
+
+  .menu-item.selected {
+    @apply bg-primary text-primary-foreground;
+  }
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+@keyframes scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes glow {
+  0%, 100% { 
+    box-shadow: 0 0 5px var(--lcd-green);
+  }
+  50% { 
+    box-shadow: 0 0 20px var(--lcd-green), 0 0 30px var(--lcd-green);
+  }
+}
+
+@keyframes flicker {
+  0%, 98%, 100% { opacity: 1; }
+  99% { opacity: 0.8; }
+}
+
+.animate-blink {
+  animation: blink 1s infinite;
+}
+
+.animate-scan {
+  animation: scan 2s linear infinite;
+}
+
+.animate-pulse-led {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+.animate-flicker {
+  animation: flicker 0.15s infinite linear;
+}
